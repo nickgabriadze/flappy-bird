@@ -18,12 +18,12 @@ class Obstacles(object):
 
     def __init__(self):
         arrOfIndices = self.get3RandomIndices()
-        self.__pipeDown1 = self.__facingDownwards.get_rect(topleft=[1210, self.__arrOfYPositions[arrOfIndices[0]][0]])
-        self.__pipeUp1 = self.__facingUpwards.get_rect(topleft=[1210, self.__arrOfYPositions[arrOfIndices[0]][1]])
-        self.__pipeDown2 = self.__facingDownwards.get_rect(topleft=[1610, self.__arrOfYPositions[arrOfIndices[1]][0]])
-        self.__pipeUp2 = self.__facingUpwards.get_rect(topleft=[1610, self.__arrOfYPositions[arrOfIndices[1]][1]])
-        self.__pipeDown3 = self.__facingDownwards.get_rect(topleft=[2210, self.__arrOfYPositions[arrOfIndices[2]][0]])
-        self.__pipeUp3 = self.__facingUpwards.get_rect(topleft=[2210, self.__arrOfYPositions[arrOfIndices[2]][1]])
+        self.__pipeDown1 = self.__facingDownwards.get_rect(topleft=[1300, self.__arrOfYPositions[arrOfIndices[0]][0]])
+        self.__pipeUp1 = self.__facingUpwards.get_rect(topleft=[1300, self.__arrOfYPositions[arrOfIndices[0]][1]])
+        self.__pipeDown2 = self.__facingDownwards.get_rect(topleft=[1720, self.__arrOfYPositions[arrOfIndices[1]][0]])
+        self.__pipeUp2 = self.__facingUpwards.get_rect(topleft=[1720, self.__arrOfYPositions[arrOfIndices[1]][1]])
+        self.__pipeDown3 = self.__facingDownwards.get_rect(topleft=[2140, self.__arrOfYPositions[arrOfIndices[2]][0]])
+        self.__pipeUp3 = self.__facingUpwards.get_rect(topleft=[2140, self.__arrOfYPositions[arrOfIndices[2]][1]])
         self.__pipes = [[self.__pipeUp1, self.__pipeDown1],
                         [self.__pipeUp2, self.__pipeDown2],
                         [self.__pipeUp3, self.__pipeDown3]]
@@ -39,37 +39,37 @@ class Obstacles(object):
         for index, pipe in enumerate(self.__pipes):
             for newIndex, individualPipe in enumerate(pipe):
                 if newIndex % 2 == 0:
-                    surface.blit(self.__facingUpwards, (individualPipe.x, individualPipe.y))
+                    surface.blit(self.__facingUpwards.convert_alpha(), (individualPipe.x, individualPipe.y))
                 elif newIndex % 2 == 1:
-                    surface.blit(self.__facingDownwards, (individualPipe.x, individualPipe.y))
+                    surface.blit(self.__facingDownwards.convert_alpha(), (individualPipe.x, individualPipe.y))
 
     def movePipes(self):
         for pipe in self.__pipes:
             for individualPipes in pipe:
-                individualPipes.x -= 4
+                individualPipes.x -= 3
         self.checkIfPassedTheBorder()
 
     def checkIfPassedTheBorder(self):
         if self.__pipeUp1.x < -70:
             arrOfIndices = self.get3RandomIndices()
-            self.__pipeUp1.x, self.__pipeDown1.x = 1310, 1310
+            self.__pipeUp1.x, self.__pipeDown1.x = 1300, 1300
             self.__pipeUp1.y, self.__pipeDown1.y = self.__arrOfYPositions[arrOfIndices[0]][1], self.__arrOfYPositions[
                 arrOfIndices[0]][0]
 
         if self.__pipeUp2.x < -70:
             arrOfIndices = self.get3RandomIndices()
-            self.__pipeUp2.x, self.__pipeDown2.x = 1310, 1310
+            self.__pipeUp2.x, self.__pipeDown2.x = 1300, 1300
             self.__pipeUp2.y, self.__pipeDown2.y = self.__arrOfYPositions[arrOfIndices[1]][1], self.__arrOfYPositions[
                 arrOfIndices[1]][0]
         if self.__pipeUp3.x < -70:
             arrOfIndices = self.get3RandomIndices()
-            self.__pipeUp3.x, self.__pipeDown3.x = 1310, 1310
+            self.__pipeUp3.x, self.__pipeDown3.x = 1300, 1300
             self.__pipeUp3.y, self.__pipeDown3.y = self.__arrOfYPositions[arrOfIndices[2]][1], self.__arrOfYPositions[
                 arrOfIndices[2]][0]
 
     def checkForScore(self, flappy):
         for pipes in self.__pipes:
-            if pipes[0].x + 40 == flappy.x:
+            if pipes[0].x + 30 == flappy.x:
                 self.__passedPipes += 1
 
     def getPipes(self):
@@ -88,10 +88,10 @@ class Flappy(object):
     __enableMovement = True
 
     def __init__(self, x, y):
-        self.flappy = pygame.Rect(x // 2 - 50, y // 2 - 50, 40, 15)
+        self.flappy = pygame.Rect(x // 2 - 50, y // 2 - 50, 40, 20)
 
     def displayFlappy(self, surface):
-        surface.blit(self.__flappyItself, (self.flappy.x, self.flappy.y))
+        surface.blit(self.__flappyItself.convert_alpha(), (self.flappy.x, self.flappy.y))
 
     def flappyMovement(self, pressedKey, mousePressed):
 
@@ -106,9 +106,9 @@ class Flappy(object):
 
             if self.__direction == "UP":
 
-                self.flappy.y -= 15
+                self.flappy.y -= 10
             elif self.__direction == "DOWN":
-                self.flappy.y += 8
+                self.flappy.y += 5
 
         if self.checkForBorders():
             return True
@@ -155,6 +155,7 @@ class App:
     __spaceButtonIcon = pygame.transform.scale(pygame.image.load("FlappyBirdAssets/PressSpace.png"), (600, 100))
     __restartICON = pygame.image.load("FlappyBirdAssets/RestartIcon.png")
     __endICON = pygame.image.load("FlappyBirdAssets/EndIcon.png")
+
     __gameOver = False
     __gameScore = 0
     __inGame = False
@@ -184,7 +185,7 @@ class App:
     def init(self):
         self.screen = pygame.display.set_mode((self.__WIDTH, self.__HEIGHT))
         pygame.display.set_caption("Flappy Bird")
-        windowIcon = pygame.image.load("FlappyBirdAssets/WindowIcon.png")
+        windowIcon = pygame.image.load("FlappyBirdAssets/WindowIcon.png").convert()
         pygame.display.set_icon(windowIcon)
         self.clock = pygame.time.Clock()
         self.running = True
@@ -212,7 +213,7 @@ class App:
                     self.__inGame = False
 
             self.cleanUp()
-            self.screen.blit(self.__gameBG, (0, 0))
+            self.screen.blit(self.__gameBG.convert(), (0, 0))
             self.obstacles.displayPipes(self.screen)
             self.obstacles.checkForScore(self.flappy.getFlappy())
             self.__gameScore = self.obstacles.getPassedPipesValue()
@@ -225,7 +226,7 @@ class App:
             if self.__movableGround:
                 self.movingGround()
             else:
-                self.screen.blit(self.__ground, (0, 560))
+                self.screen.blit(self.__ground.convert_alpha(), (0, 560))
 
             self.gameOver()
 
@@ -255,8 +256,8 @@ class App:
             gameOverFont = pygame.font.Font("FlappyBirdAssets/BungeeShade-Regular.ttf", 45)
             gameOverText = gameOverFont.render(f"Score:{self.__gameScore}", False, (4, 5, 115))
             self.screen.blit(gameOverText, (self.__WIDTH // 2 - width, self.__HEIGHT // 2 - 45))
-            self.screen.blit(self.__restartICON, (self.__WIDTH // 2 - 120, self.__HEIGHT // 2 + 5))
-            self.screen.blit(self.__endICON, (self.__WIDTH // 2 + 5, self.__HEIGHT // 2 + 5))
+            self.screen.blit(self.__restartICON.convert_alpha(), (self.__WIDTH // 2 - 120, self.__HEIGHT // 2 + 5))
+            self.screen.blit(self.__endICON.convert_alpha(), (self.__WIDTH // 2 + 5, self.__HEIGHT // 2 + 5))
 
     def checkForRestartOrQuit(self):
         if self.__gameOver:
@@ -275,7 +276,7 @@ class App:
             pressedKeys = pygame.key.get_pressed()
             flappyBirdFont = pygame.font.Font("FlappyBirdAssets/Aldrich-Regular.ttf", 100)
             flappyBirdText = flappyBirdFont.render("FlappyBird", False, (255, 255, 255))
-            self.screen.blit(self.__spaceButtonIcon, (self.__WIDTH // 2 - 300, self.__HEIGHT // 2 + 20))
+            self.screen.blit(self.__spaceButtonIcon.convert_alpha(), (self.__WIDTH // 2 - 300, self.__HEIGHT // 2 + 20))
             self.screen.blit(flappyBirdText, (335, 100))
             if pressedKeys[pygame.K_SPACE]:
                 self.__gameStarted = True
@@ -284,12 +285,11 @@ class App:
                 self.__movableGround = True
 
     def movingGround(self):
-        self.screen.blit(self.__ground, (self.__flappyGround.x, self.__flappyGround.y))
+        self.screen.blit(self.__ground.convert_alpha(), (self.__flappyGround.x, self.__flappyGround.y))
         if self.__flappyGround.x < - 300:
             self.__flappyGround.x = -51
-
         else:
-            self.__flappyGround.x -= 4
+            self.__flappyGround.x -= 3
 
     def cleanUp(self):
         self.screen.fill(0)
