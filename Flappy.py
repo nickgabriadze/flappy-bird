@@ -36,13 +36,16 @@ class Flappy(object):
             return True
 
     def checkForBorders(self):
-        if self.flappy.y < -8:
+        if self.flappy.y < -18:
             pygame.mixer.music.load("FlappyBirdAssets/ObstacleHit.ogg")
             pygame.mixer.music.play()
             self.flappy.y = -8
             self.__enableMovement = False
-
+            self.__flappyItself = self.__flappyDown
+             self.flappy.y = 505
+                
             return True
+        
         elif self.flappy.y > 505:
             pygame.mixer.music.load("FlappyBirdAssets/ObstacleHit.ogg")
             pygame.mixer.music.play()
