@@ -42,7 +42,7 @@ class Flappy(object):
             self.flappy.y = -8
             self.__enableMovement = False
             self.__flappyItself = self.__flappyDown
-             self.flappy.y = 505
+            self.flappy.y = 505
                 
             return True
         
